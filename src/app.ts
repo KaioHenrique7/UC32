@@ -17,6 +17,9 @@ app.use(
         resave: false,
         saveUninitialized: false
     })
+    
 );
-
+app.get("/", (req, res) => {
+    res.redirect("/login");
+});
 export default app;
