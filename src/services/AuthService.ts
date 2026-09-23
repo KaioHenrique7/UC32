@@ -8,24 +8,31 @@ export class AuthService {
         email: string,
         password: string
     ) {
+        if (!name || !email || !password) {
+            throw new Error(
+                "Todos os campos são obrigatórios."
+            );
+        }
+    
         const existingUser =
             await UserModel.findByEmail(email);
-
+    
         if (existingUser) {
             throw new Error("E-mail já cadastrado.");
         }
-
+    
         const hashedPassword =
             await bcrypt.hash(password, 10);
-
+    
         const userId = await UserModel.create({
             name,
             email,
             password: hashedPassword
         });
-
+    
         return userId;
     }
+    
 
     static async login(
         email: string,
