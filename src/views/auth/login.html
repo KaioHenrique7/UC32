@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Login - UC32</title>
+
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
@@ -11,25 +13,31 @@
 
     <main class="auth-container">
 
-        <div class="card">
+        <section class="auth-card">
 
-            <h1>Entrar</h1>
+            <h1>UC32</h1>
 
-            <p>Entre na sua conta para continuar.</p>
+            <h2>Entrar</h2>
 
-            <form action="/login" method="POST">
+            <form id="login-form">
 
-                <label>E-mail</label>
+                <label for="email">E-mail</label>
+
                 <input
                     type="email"
+                    id="email"
                     name="email"
+                    placeholder="Digite seu e-mail"
                     required
                 >
 
-                <label>Senha</label>
+                <label for="password">Senha</label>
+
                 <input
                     type="password"
+                    id="password"
                     name="password"
+                    placeholder="Digite sua senha"
                     required
                 >
 
@@ -37,18 +45,20 @@
                     Entrar
                 </button>
 
+                <p id="login-message" class="message"></p>
+
             </form>
 
             <p>
-                Ainda não possui conta?
-                <a href="/register">
-                    Criar conta
-                </a>
+                Não tem uma conta?
+                <a href="/register">Cadastre-se</a>
             </p>
 
-        </div>
+        </section>
 
     </main>
+
+    <script src="/js/login.js"></script>
 
 </body>
 </html>
