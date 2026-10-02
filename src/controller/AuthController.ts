@@ -1,4 +1,3 @@
-
 import {
     Request,
     Response
@@ -104,6 +103,25 @@ export class AuthController {
                 message:
                     "Logout realizado com sucesso."
             });
+        });
+    }
+
+    static async me(
+        req: Request,
+        res: Response
+    ) {
+
+        if (!req.session.userId) {
+
+            return res.status(401).json({
+                message:
+                    "Usuário não autenticado."
+            });
+        }
+
+        return res.json({
+            userId:
+                req.session.userId
         });
     }
 }
