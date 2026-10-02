@@ -11,4 +11,33 @@ form?.addEventListener("submit", async (event) => {
 
     message.textContent = "Entrando...";
 
+    try {
+
+        const response = await fetch("/login", {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                email,
+                password
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Erro ao realizar login.");
+        }
+
+        window.location.href = "/dashboard";
+
+    } catch (error) {
+
+        message.textContent = error.message;
+
+    }
+
 });
