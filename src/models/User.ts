@@ -2,34 +2,45 @@ import connection from "../database/connection";
 import { User } from "../types";
 
 export class UserModel {
+    static async create(user: User): Promise<number> {
+        const createdUser = await connection.user.create({
+            data: {
+                name: user.name,
+                email: user.email,
+                password: user.password
+            },
+            select: { id: true }
+        });
 
-    static async create(user: User) {
-        const [result]: any = await connection.execute(
-            `INSERT INTO users (name, email, password)
-             VALUES (?, ?, ?)`,
-            [user.name, user.email, user.password]
-        );
-
-        return result.insertId;
+        return createdUser.id;
     }
 
     static async findByEmail(email: string) {
-        const [rows]: any = await connection.execute(
-            `SELECT * FROM users WHERE email = ?`,
-            [email]
-        );
-
-        return rows[0] || null;
+        return connection.user.findUnique({
+            where: { email }
+        });
     }
 
     static async findById(id: number) {
-        const [rows]: any = await connection.execute(
-            `SELECT id, name, email, created_at
-             FROM users
-             WHERE id = ?`,
-            [id]
-        );
+        const user = await connection.user.findUnique({
+            where: { id },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                createdAt: true
+            }
+        });
 
-        return rows[0] || null;
+        if (!user) {
+            return null;
+        }
+
+        return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            created_at: user.createdAt
+        };
     }
 }

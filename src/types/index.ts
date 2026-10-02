@@ -5,11 +5,13 @@ export interface User {
     password: string;
 }
 
+export type ComplaintStatus = "aberta" | "em_analise" | "resolvida";
+
 export interface Complaint {
     id?: number;
     user_id: number;
     title: string;
     description: string;
-    status?: "aberta" | "em_analise" | "resolvida";
+    status?: ComplaintStatus;
     created_at?: Date;
 }

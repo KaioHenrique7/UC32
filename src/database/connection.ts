@@ -1,16 +1,25 @@
-import mysql from "mysql2/promise";
-import dotenv from "dotenv";
+import { PrismaClient } from "@prisma/client";
 
-dotenv.config();
+/**
+ * Mantém uma única instância do Prisma Client durante o processo.
+ * Em desenvolvimento, o singleton também evita várias conexões quando o
+ * processo é recarregado por ferramentas como ts-node-dev.
+ */
+const globalForPrisma = globalThis as unknown as {
+    prisma?: PrismaClient;
+};
 
-const connection = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: Number(process.env.DB_PORT) || 3306,
-    waitForConnections: true,
-    connectionLimit: 10
-});
+const prisma =
+    globalForPrisma.prisma ??
+    new PrismaClient({
+        log: process.env.NODE_ENV === "development"
+            ? ["warn", "error"]
+            : ["error"]
+    });
 
-export default connection;
+if (process.env.NODE_ENV !== "production") {
+    globalForPrisma.prisma = prisma;
+}
+
+export { prisma };
+export default prisma;

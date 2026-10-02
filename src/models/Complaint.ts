@@ -1,44 +1,52 @@
 import connection from "../database/connection";
 import { Complaint } from "../types";
 
+function toComplaintShape(complaint: {
+    id: number;
+    userId: number;
+    title: string;
+    description: string;
+    status: "aberta" | "em_analise" | "resolvida";
+    createdAt: Date;
+}) {
+    return {
+        id: complaint.id,
+        user_id: complaint.userId,
+        title: complaint.title,
+        description: complaint.description,
+        status: complaint.status,
+        created_at: complaint.createdAt
+    };
+}
+
 export class ComplaintModel {
+    static async create(complaint: Complaint): Promise<number> {
+        const createdComplaint = await connection.complaint.create({
+            data: {
+                userId: complaint.user_id,
+                title: complaint.title,
+                description: complaint.description
+            },
+            select: { id: true }
+        });
 
-    static async create(complaint: Complaint) {
-        const [result]: any = await connection.execute(
-            `INSERT INTO complaints
-            (user_id, title, description)
-            VALUES (?, ?, ?)`,
-            [
-                complaint.user_id,
-                complaint.title,
-                complaint.description
-            ]
-        );
-
-        return result.insertId;
+        return createdComplaint.id;
     }
 
     static async findAllByUser(userId: number) {
-        const [rows] = await connection.execute(
-            `SELECT *
-             FROM complaints
-             WHERE user_id = ?
-             ORDER BY created_at DESC`,
-            [userId]
-        );
+        const complaints = await connection.complaint.findMany({
+            where: { userId },
+            orderBy: { createdAt: "desc" }
+        });
 
-        return rows;
+        return complaints.map(toComplaintShape);
     }
 
     static async findById(id: number, userId: number) {
-        const [rows]: any = await connection.execute(
-            `SELECT *
-             FROM complaints
-             WHERE id = ?
-             AND user_id = ?`,
-            [id, userId]
-        );
+        const complaint = await connection.complaint.findFirst({
+            where: { id, userId }
+        });
 
-        return rows[0] || null;
+        return complaint ? toComplaintShape(complaint) : null;
     }
 }

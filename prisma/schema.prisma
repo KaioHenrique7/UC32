@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum ComplaintStatus {
+  aberta
+  em_analise
+  resolvida
+
+  @@map("complaint_status")
+}
+
+model User {
+  id         Int         @id @default(autoincrement())
+  name       String      @db.VarChar(100)
+  email      String      @unique @db.VarChar(150)
+  password   String      @db.VarChar(255)
+  createdAt  DateTime    @default(now()) @map("created_at")
+  complaints Complaint[]
+
+  @@map("users")
+}
+
+model Complaint {
+  id          Int             @id @default(autoincrement())
+  userId      Int             @map("user_id")
+  title       String          @db.VarChar(150)
+  description String          @db.Text
+  status      ComplaintStatus @default(aberta)
+  createdAt   DateTime        @default(now()) @map("created_at")
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([userId])
+  @@map("complaints")
+}

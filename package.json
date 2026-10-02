@@ -7,7 +7,14 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:studio": "prisma studio"
   },
   "repository": {
     "type": "git",
@@ -22,16 +29,17 @@
   },
   "homepage": "https://github.com/KaioHenrique7/UC32#readme",
   "dependencies": {
+    "@prisma/client": "6.19.0",
     "bcryptjs": "^3.0.3",
     "dotenv": "^18.0.3",
     "express": "^5.2.1",
-    "express-session": "^1.19.0",
-    "mysql2": "^3.24.4"
+    "express-session": "^1.19.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/express-session": "^1.19.0",
     "@types/node": "^26.6.2",
+    "prisma": "6.19.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^7.0.2"
   }
