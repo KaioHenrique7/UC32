@@ -1,14 +1,14 @@
-async function loadUser() {
+async function loadComplaints() {
 
-    const response = await fetch("/api/user/me");
+    const response = await fetch("/complaints");
 
     if (!response.ok) {
-        window.location.href = "/login";
         return;
     }
 
-    const user = await response.json();
+    const complaints = await response.json();
 
-    document.getElementById("user-name").textContent =
-        user.name;
+    updateSummary(complaints);
 }
+
+loadComplaints();
