@@ -2,7 +2,6 @@ import bcrypt from "bcryptjs";
 import { UserModel } from "../models/User";
 
 export class AuthService {
-
     static async register(
         name: string,
         email: string,
@@ -13,26 +12,28 @@ export class AuthService {
                 "Todos os campos são obrigatórios."
             );
         }
-    
+
         const existingUser =
             await UserModel.findByEmail(email);
-    
+
         if (existingUser) {
-            throw new Error("E-mail já cadastrado.");
+            throw new Error(
+                "E-mail já cadastrado."
+            );
         }
-    
+
         const hashedPassword =
             await bcrypt.hash(password, 10);
-    
-        const userId = await UserModel.create({
-            name,
-            email,
-            password: hashedPassword
-        });
-    
+
+        const userId =
+            await UserModel.create({
+                name,
+                email,
+                password: hashedPassword
+            });
+
         return userId;
     }
-    
 
     static async login(
         email: string,
@@ -42,7 +43,9 @@ export class AuthService {
             await UserModel.findByEmail(email);
 
         if (!user) {
-            throw new Error("E-mail ou senha inválidos.");
+            throw new Error(
+                "E-mail ou senha inválidos."
+            );
         }
 
         const passwordCorrect =
@@ -52,7 +55,9 @@ export class AuthService {
             );
 
         if (!passwordCorrect) {
-            throw new Error("E-mail ou senha inválidos.");
+            throw new Error(
+                "E-mail ou senha inválidos."
+            );
         }
 
         return user;
