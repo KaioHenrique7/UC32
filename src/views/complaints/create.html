@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Nova reclamação</title>
+
+    <link
+        rel="stylesheet"
+        href="/css/style.css"
+    >
+</head>
+
+<body>
+
+<main class="dashboard">
+
+    <h1>Nova reclamação</h1>
+
+    <form
+        action="/complaints"
+        method="POST"
+        class="card"
+    >
+
+        <label>Título</label>
+
+        <input
+            type="text"
+            name="title"
+            required
+        >
+
+        <label>Descrição</label>
+
+        <textarea
+            name="description"
+            rows="8"
+            required
+        ></textarea>
+
+        <button type="submit">
+            Enviar reclamação
+        </button>
+
+    </form>
+
+</main>
+
+</body>
+</html>
