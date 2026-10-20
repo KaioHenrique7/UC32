@@ -11,30 +11,31 @@ export class AuthController {
         req: Request,
         res: Response
     ) {
-
         try {
-
-            const {
-                name,
-                email,
-                password
-            } = req.body;
-
+            const name =
+                String(req.body.name).trim();
+    
+            const email =
+                String(req.body.email)
+                    .trim()
+                    .toLowerCase();
+    
+            const password =
+                String(req.body.password);
+    
             const userId =
                 await AuthService.register(
                     name,
                     email,
                     password
                 );
-
+    
             return res.status(201).json({
                 message:
                     "Usuário criado com sucesso.",
                 userId
             });
-
         } catch (error: any) {
-
             return res.status(400).json({
                 message:
                     error.message ||
