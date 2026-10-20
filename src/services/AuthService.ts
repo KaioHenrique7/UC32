@@ -22,6 +22,12 @@ export class AuthService {
             );
         }
 
+        if (password.length < 6) {
+            throw new Error(
+                "A senha deve possuir pelo menos 6 caracteres."
+            );
+        }
+
         const hashedPassword =
             await bcrypt.hash(password, 10);
 
