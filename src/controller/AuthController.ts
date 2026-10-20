@@ -14,27 +14,28 @@ export class AuthController {
         try {
             const name =
                 String(req.body.name).trim();
-    
+
             const email =
                 String(req.body.email)
                     .trim()
                     .toLowerCase();
-    
+
             const password =
                 String(req.body.password);
-    
+
             const userId =
                 await AuthService.register(
                     name,
                     email,
                     password
                 );
-    
+
             return res.status(201).json({
                 message:
                     "Usuário criado com sucesso.",
                 userId
             });
+
         } catch (error: any) {
             return res.status(400).json({
                 message:
@@ -53,19 +54,19 @@ export class AuthController {
                 String(req.body.email)
                     .trim()
                     .toLowerCase();
-    
+
             const password =
                 String(req.body.password);
-    
+
             const user =
                 await AuthService.login(
                     email,
                     password
                 );
-    
+
             req.session.userId =
                 user.id;
-    
+
             return res.json({
                 message:
                     "Login realizado com sucesso.",
@@ -75,6 +76,7 @@ export class AuthController {
                     email: user.email
                 }
             });
+
         } catch (error: any) {
             return res.status(401).json({
                 message:
@@ -88,9 +90,7 @@ export class AuthController {
         req: Request,
         res: Response
     ) {
-
         if (!req.session.userId) {
-
             return res.status(401).json({
                 message:
                     "Usuário não autenticado."
