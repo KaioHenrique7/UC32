@@ -21,4 +21,9 @@ router.post(
     AuthController.logout
 );
 
+router.get(
+    "/me",
+    AuthController.me
+);
+
 export default router;
