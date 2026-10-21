@@ -104,3 +104,26 @@ body {
     font-weight: bold;
     margin-top: 5px;
 }
+
+@media (max-width: 600px) {
+    .auth-container {
+        padding: 15px;
+    }
+
+    .auth-card {
+        padding: 25px 20px;
+    }
+
+    .auth-card h1 {
+        font-size: 28px;
+    }
+
+    .auth-card h2 {
+        font-size: 22px;
+    }
+
+    .auth-card input,
+    .auth-card button {
+        font-size: 15px;
+    }
+}
