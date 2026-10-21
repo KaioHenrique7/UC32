@@ -1,4 +1,9 @@
+
 import { Router } from "express";
+
+import {
+    UserController
+} from "../controller/UserController";
 
 import {
     authMiddleware
@@ -15,6 +20,12 @@ router.get(
             userId: req.session.userId
         });
     }
+);
+
+router.get(
+    "/api/user/me",
+    authMiddleware,
+    UserController.me
 );
 
 export default router;
