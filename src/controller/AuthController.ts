@@ -78,6 +78,7 @@ export class AuthController {
             });
 
         } catch (error: any) {
+            // Tratamento de erro no login
             return res.status(401).json({
                 message:
                     error.message ||
