@@ -1,6 +1,7 @@
 import express from "express";
 import session from "express-session";
 import dotenv from "dotenv";
+import complaintRoutes from "./routes/complaintRoutes";
 
 dotenv.config();
 
@@ -17,9 +18,12 @@ app.use(
         resave: false,
         saveUninitialized: false
     })
-    
 );
+
+app.use(complaintRoutes);
+
 app.get("/", (req, res) => {
     res.redirect("/login");
 });
+
 export default app;
