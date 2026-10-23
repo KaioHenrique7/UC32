@@ -11,7 +11,8 @@ dotenv.config();
 
 const app = express();
 
-// Configuração de requisições
+// COMMIT 9 — Configuração da aplicação Express
+
 app.use(express.json());
 
 app.use(
@@ -32,56 +33,99 @@ app.use(
     })
 );
 
-// Página inicial
+// COMMIT 11 — Redirecionamento inicial
+
 app.get("/", (req, res) => {
     res.redirect("/login");
 });
 
-// Login
+// COMMIT 12 — Rota de login
+
 app.get("/login", (req, res) => {
     res.sendFile("login.html", {
         root: "src/views/auth"
     });
 });
 
-// Cadastro
+// COMMIT 13 — Rota de cadastro
+
 app.get("/register", (req, res) => {
     res.sendFile("register.html", {
         root: "src/views/auth"
     });
 });
 
-// Dashboard
+// COMMIT 14 — Rota do dashboard
+
 app.get("/dashboard", (req, res) => {
     res.sendFile("index.html", {
         root: "src/views/dashboard"
     });
 });
 
-// Página de reclamações
+// COMMIT 15 — Rota de reclamações
+
 app.get("/complaints", (req, res) => {
     res.sendFile("index.html", {
         root: "src/views/complaints"
     });
 });
 
-// Criar reclamação
+// COMMIT 16 — Rota de criação de reclamação
+
 app.get("/complaints/create", (req, res) => {
     res.sendFile("create.html", {
         root: "src/views/complaints"
     });
 });
 
-// Detalhes da reclamação
+// COMMIT 17 — Rota de detalhes da reclamação
+
 app.get("/complaints/details", (req, res) => {
     res.sendFile("details.html", {
         root: "src/views/complaints"
     });
 });
 
-// Integração das rotas
+// COMMIT 18 — Integração das rotas de autenticação
+
 app.use(authRoutes);
+
+// COMMIT 19 — Integração das rotas de reclamações
+
 app.use(complaintRoutes);
+
+// COMMIT 20 — Integração das rotas de usuários
+
 app.use(userRoutes);
+
+// COMMIT 23 — Tratamento de erros
+
+app.use(
+    (
+        err: any,
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction
+    ) => {
+        console.error(err);
+
+        if (res.headersSent) {
+            next(err);
+            return;
+        }
+
+        res.status(500).send("Erro interno do servidor.");
+    }
+);
+
+// COMMIT 24 — Página 404
+// Deve ficar depois de todas as rotas.
+
+app.use((req, res) => {
+    res.status(404).send("Página não encontrada.");
+});
+
+// Exportação da aplicação
 
 export default app;
