@@ -40,4 +40,29 @@ export class ComplaintController {
             });
         }
     }
+
+    static async details(
+        req: Request,
+        res: Response
+    ) {
+        try {
+            const userId = req.session.userId!;
+            const id = Number(req.params.id);
+
+            const complaint =
+                await ComplaintService.details(id, userId);
+
+            if (!complaint) {
+                return res.status(404).json({
+                    message: "Reclamação não encontrada."
+                });
+            }
+
+            return res.json(complaint);
+        } catch {
+            return res.status(500).json({
+                message: "Erro ao buscar reclamação."
+            });
+        }
+    }
 }
