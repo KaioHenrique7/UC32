@@ -78,6 +78,7 @@ export class AuthController {
             });
 
         } catch (error: any) {
+            // Tratamento de erro no login
             return res.status(401).json({
                 message:
                     error.message ||
@@ -100,6 +101,25 @@ export class AuthController {
         return res.json({
             userId:
                 req.session.userId
+        });
+    }
+
+    static async logout(
+        req: Request,
+        res: Response
+    ) {
+        req.session.destroy((error) => {
+            if (error) {
+                return res.status(500).json({
+                    message: "Erro ao sair da conta."
+                });
+            }
+
+            res.clearCookie("connect.sid");
+
+            return res.json({
+                message: "Logout realizado com sucesso."
+            });
         });
     }
 }
