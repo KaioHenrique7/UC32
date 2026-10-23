@@ -22,4 +22,22 @@ export class ComplaintController {
             return res.status(400).send(error.message);
         }
     }
+
+    static async list(
+        req: Request,
+        res: Response
+    ) {
+        try {
+            const userId = req.session.userId!;
+
+            const complaints =
+                await ComplaintService.list(userId);
+
+            return res.json(complaints);
+        } catch {
+            return res.status(500).json({
+                message: "Erro ao buscar reclamações."
+            });
+        }
+    }
 }
