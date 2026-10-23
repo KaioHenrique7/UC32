@@ -1,6 +1,9 @@
 import express from "express";
 import session from "express-session";
 import dotenv from "dotenv";
+
+import authRoutes from "./routes/authRoutes";
+import userRoutes from "./routes/userRoutes";
 import complaintRoutes from "./routes/complaintRoutes";
 
 dotenv.config();
@@ -20,6 +23,8 @@ app.use(
     })
 );
 
+app.use(authRoutes);
+app.use(userRoutes);
 app.use(complaintRoutes);
 
 app.get("/", (req, res) => {
