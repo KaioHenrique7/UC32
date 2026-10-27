@@ -22,19 +22,55 @@ model User {
   password   String      @db.VarChar(255)
   createdAt  DateTime    @default(now()) @map("created_at")
   complaints Complaint[]
+  votes      Vote[]
 
   @@map("users")
+}
+
+model VotingCycle {
+  id         Int         @id @default(autoincrement())
+  startsAt   DateTime    @unique @map("starts_at")
+  endsAt     DateTime    @map("ends_at")
+  complaints Complaint[]
+  votes      Vote[]
+
+  @@map("voting_cycles")
 }
 
 model Complaint {
   id          Int             @id @default(autoincrement())
   userId      Int             @map("user_id")
+  cycleId     Int?            @map("cycle_id")
   title       String          @db.VarChar(150)
   description String          @db.Text
   status      ComplaintStatus @default(aberta)
+  isAnonymous Boolean         @default(false) @map("is_anonymous")
+  photoPath   String?         @map("photo_path") @db.VarChar(255)
+  deletedAt   DateTime?       @map("deleted_at")
   createdAt   DateTime        @default(now()) @map("created_at")
-  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  user  User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  cycle VotingCycle? @relation(fields: [cycleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  votes Vote[]
 
   @@index([userId])
+  @@index([cycleId])
   @@map("complaints")
+}
+
+model Vote {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id")
+  complaintId Int      @map("complaint_id")
+  cycleId     Int      @map("cycle_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user      User        @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  complaint Complaint   @relation(fields: [complaintId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  cycle     VotingCycle @relation(fields: [cycleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@unique([userId, cycleId])
+  @@index([complaintId])
+  @@index([cycleId])
+  @@map("votes")
 }
