@@ -1,56 +1,70 @@
-<header class="dashboard-header">
 
-    <h1>UC32</h1>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reclamações | UC32</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="layout">
 
-    <button id="logout-button">
-        Sair
-    </button>
+        <aside class="sidebar">
+            <h2>UC32</h2>
+            <nav>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/complaints">Reclamações</a>
+                <a href="/complaints/create">Nova reclamação</a>
+                <a href="/logout">Sair</a>
+            </nav>
+        </aside>
 
-</header>
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <h1>Reclamações</h1>
+                    <p class="muted">
+                        Consulte suas reclamações cadastradas.
+                    </p>
+                </div>
 
-<section class="welcome-section">
+                <a class="btn" href="/complaints/create">
+                    + Nova reclamação
+                </a>
+            </header>
 
-    <h2>
-        Olá, <span id="user-name">usuário</span>!
-    </h2>
+            <section class="panel">
+                <h2>Minhas reclamações</h2>
 
-    <p>
-        Bem-vindo ao sistema de reclamações.
-    </p>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Categoria</th>
+                                <th>Status</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
 
-</section>
+                        <tbody>
+                            <tr>
+                                <td colspan="4">
+                                    Nenhuma reclamação foi carregada.
+                                    <p class="muted">
+                                        A integração com o back-end
+                                        será necessária para exibir
+                                        os dados reais.
+                                    </p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
 
-<section class="summary-section">
-
-    <h2>Resumo</h2>
-
-    <div class="summary-cards">
-
-        <div class="summary-card">
-            <h3>Total</h3>
-            <p id="total-complaints">0</p>
-        </div>
-
-        <div class="summary-card">
-            <h3>Abertas</h3>
-            <p id="open-complaints">0</p>
-        </div>
-
-        <div class="summary-card">
-            <h3>Resolvidas</h3>
-            <p id="resolved-complaints">0</p>
-        </div>
-        <section class="recent-section">
-
-    <h2>Reclamações recentes</h2>
-
-    <div id="recent-complaints">
-        <p>Carregando reclamações...</p>
     </div>
-
-</section>
-
-
-    </div>
-
-</section>
+</body>
+</html>
