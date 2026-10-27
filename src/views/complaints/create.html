@@ -1,52 +1,83 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
-
-    <title>Nova reclamação</title>
-
-    <link
-        rel="stylesheet"
-        href="/css/style.css"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Reclamação | UC32</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
+    <div class="layout">
 
-<main class="dashboard">
+        <aside class="sidebar">
+            <h2>UC32</h2>
 
-    <h1>Nova reclamação</h1>
+            <nav>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/complaints">Reclamações</a>
+                <a href="/complaints/create">Nova reclamação</a>
+                <a href="/logout">Sair</a>
+            </nav>
+        </aside>
 
-    <form
-        action="/complaints"
-        method="POST"
-        class="card"
-    >
+        <main class="main">
 
-        <label>Título</label>
+            <header class="topbar">
+                <div>
+                    <h1>Nova reclamação</h1>
+                    <p class="muted">
+                        Preencha os dados para registrar sua reclamação.
+                    </p>
+                </div>
+            </header>
 
-        <input
-            type="text"
-            name="title"
-            required
-        >
+            <section class="panel">
+                <h2>Dados da reclamação</h2>
 
-        <label>Descrição</label>
+                <form action="/complaints" method="POST">
 
-        <textarea
-            name="description"
-            rows="8"
-            required
-        ></textarea>
+                    <label for="title">Título</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        placeholder="Digite o título da reclamação"
+                        required
+                    >
 
-        <button type="submit">
-            Enviar reclamação
-        </button>
+                    <label for="category">Categoria</label>
+                    <select id="category" name="category" required>
+                        <option value="">Selecione uma categoria</option>
+                        <option value="estrutura">Estrutura</option>
+                        <option value="limpeza">Limpeza</option>
+                        <option value="atendimento">Atendimento</option>
+                        <option value="outros">Outros</option>
+                    </select>
 
-    </form>
+                    <label for="description">Descrição</label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        placeholder="Explique o problema encontrado..."
+                        required
+                    ></textarea>
 
-</main>
+                    <div class="form-actions">
+                        <button type="submit">
+                            Enviar reclamação
+                        </button>
 
+                        <a class="btn btn-secondary" href="/complaints">
+                            Cancelar
+                        </a>
+                    </div>
+
+                </form>
+            </section>
+
+        </main>
+    </div>
 </body>
 </html>
