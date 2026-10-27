@@ -1,46 +1,71 @@
 async function loadComplaints() {
-
-    const response =
-        await fetch("/complaints");
-
-    const complaints =
-        await response.json();
-
     const container =
-        document.getElementById(
-            "complaints-list"
-        );
+        document.getElementById("complaints-list");
 
-    container.innerHTML = "";
+    if (!container) {
+        return;
+    }
 
-    complaints.forEach(complaint => {
+    try {
+        const response = await fetch("/api/complaints", {
+            headers: {
+                Accept: "application/json"
+            }
+        });
 
-        const card =
-            document.createElement("div");
+        if (response.status === 401) {
+            window.location.href = "/login";
+            return;
+        }
 
-        card.className = "dashboard-card";
+        if (!response.ok) {
+            throw new Error("Erro ao carregar reclamações.");
+        }
 
-        card.innerHTML = `
-            <h3>${complaint.title}</h3>
+        const complaints = await response.json();
 
-            <p>
-                ${complaint.description}
-            </p>
+        container.replaceChildren();
 
-            <strong>
-                Status:
-                ${complaint.status}
-            </strong>
+        if (complaints.length === 0) {
+            container.textContent =
+                "Nenhuma reclamação encontrada.";
+            return;
+        }
 
-            <br><br>
+        complaints.forEach((complaint) => {
+            const card = document.createElement("div");
+            card.className = "dashboard-card";
 
-            <a href="/complaints/details.html?id=${complaint.id}">
-                Ver detalhes
-            </a>
-        `;
+            const title = document.createElement("h3");
+            title.textContent = complaint.title;
 
-        container.appendChild(card);
-    });
+            const description = document.createElement("p");
+            description.textContent = complaint.description;
+
+            const status = document.createElement("strong");
+            status.textContent = `Status: ${complaint.status}`;
+
+            const link = document.createElement("a");
+            link.href =
+                `/complaints/details?id=${complaint.id}`;
+            link.textContent = "Ver detalhes";
+
+            card.append(
+                title,
+                description,
+                status,
+                document.createElement("br"),
+                document.createElement("br"),
+                link
+            );
+
+            container.appendChild(card);
+        });
+    } catch (error) {
+        container.textContent =
+            "Não foi possível carregar as reclamações.";
+        console.error(error);
+    }
 }
 
 loadComplaints();
