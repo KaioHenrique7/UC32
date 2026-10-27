@@ -9,16 +9,17 @@ export function authMiddleware(
     res: Response,
     next: NextFunction
 ) {
-<<<<<<< HEAD
-
     if (!req.session.userId) {
-        return res.redirect("/login");
-    }
+        const isApiRequest =
+            req.originalUrl.startsWith("/api/");
 
-    next();
-}
-=======
-    if (!req.session.userId) {
+        const wantsHtml =
+            req.accepts(["html", "json"]) === "html";
+
+        if (!isApiRequest && wantsHtml) {
+            return res.redirect("/login");
+        }
+
         return res.status(401).json({
             message: "Usuario nao autenticado."
         });
@@ -26,4 +27,3 @@ export function authMiddleware(
 
     return next();
 }
->>>>>>> 907732ffd40f4e3c0742ec578d97207411d6a5ff
