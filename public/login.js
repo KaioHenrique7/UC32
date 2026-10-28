@@ -1,7 +1,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
-    const form = document.querySelector("#loginForm");
-    const message = document.querySelector("#message");
+    const form = document.querySelector("#login-form");
+const message = document.querySelector("#login-message");
   
     if (!form) return;
   
@@ -23,14 +23,13 @@ document.addEventListener("DOMContentLoaded", () => {
       button.textContent = "Entrando...";
   
       try {
-        const response = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ email, password })
+        const response = await fetch("/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email, password })
         });
-  
         const data = await response.json();
   
         if (!response.ok) {

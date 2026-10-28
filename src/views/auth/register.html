@@ -1,78 +1,75 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro - UC32</title>
+    <title>Criar conta - UC32</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
-
 <body>
-    <main class="auth-container">
+    <main class="auth-page">
         <section class="auth-card">
-            <h1>UC32</h1>
-            <h2>Criar conta</h2>
+            <div class="logo">UC32</div>
 
-            <form id="register-form">
+            <h1>Criar conta</h1>
+            <p class="subtitle">Preencha os campos para criar sua conta.</p>
 
-                <label for="name">
-                    Nome
-                </label>
-            
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    placeholder="Digite seu nome"
-                    required
-                >
-                <label for="email">
-                    E-mail
-                </label>
-                
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="Digite seu e-mail"
-                    required
-                >
-                <label for="password">
-                    Senha
-                </label>
-                
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Digite sua senha"
-                    required
-                >
-                <label for="confirmPassword">
-                    Confirmar senha
-                </label>
-                
-                <input
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    placeholder="Digite a senha novamente"
-                    required
-                >
-                <button type="submit">
+            <form action="/register" method="POST">
+                <div class="form-group">
+                    <label for="name">Nome</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Digite seu nome"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Digite seu e-mail"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Crie uma senha"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirmar senha</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        placeholder="Digite a senha novamente"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">
                     Cadastrar
                 </button>
-                <p
-    id="register-message"
-    class="message"
-></p>
             </form>
-            <p>Já possui uma conta? <a href="/login">Entrar</a></p>
+
+            <p class="auth-footer">
+                Já possui uma conta?
+                <a href="/login">Entrar</a>
+            </p>
         </section>
     </main>
-
-    <script src="/js/register.js"></script>
 </body>
-
 </html>

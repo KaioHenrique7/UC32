@@ -1,25 +1,114 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes da reclamação - UC32</title>
+    <title>Detalhes da reclamação | UC32</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
-    <main class="page-container">
-        <header>
-            <h1>Detalhes da reclamação</h1>
+    <div class="layout">
+
+        <aside class="sidebar">
+            <h2>UC32</h2>
+
             <nav>
                 <a href="/dashboard">Dashboard</a>
-                <a href="/complaints">Voltar</a>
+                <a href="/complaints">Reclamações</a>
+                <a href="/complaints/create">Nova reclamação</a>
+                <a href="/logout">Sair</a>
             </nav>
-        </header>
-        <p id="details-message" class="message"></p>
-        <article id="complaint-details" class="complaint-card">
-            Carregando reclamação...
-        </article>
-    </main>
-    <script src="/js/details.js"></script>
+        </aside>
+
+        <main class="main">
+
+            <header class="topbar">
+                <h1>Detalhes da reclamação</h1>
+                <a class="btn btn-secondary" href="/complaints">Voltar</a>
+            </header>
+
+            <section class="panel" id="complaint-details">
+                <p>Carregando detalhes...</p>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        async function loadDetails() {
+            const panel = document.getElementById("complaint-details");
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get("id");
+
+            if (!id || !/^\d+$/.test(id) || Number(id) <= 0) {
+                panel.textContent = "ID da reclamação inválido.";
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    `/api/complaints/${encodeURIComponent(id)}`
+                );
+
+                if (response.status === 401) {
+                    window.location.href = "/login";
+                    return;
+                }
+
+                if (response.status === 404) {
+                    panel.textContent = "Reclamação não encontrada.";
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error("Erro ao buscar detalhes.");
+                }
+
+                const complaint = await response.json();
+
+                panel.replaceChildren();
+
+                const title = document.createElement("h2");
+                title.textContent = complaint.title;
+
+                const descriptionLabel = document.createElement("p");
+                const descriptionStrong = document.createElement("strong");
+                descriptionStrong.textContent = "Descrição:";
+                descriptionLabel.appendChild(descriptionStrong);
+
+                const description = document.createElement("p");
+                description.textContent = complaint.description;
+
+                const status = document.createElement("p");
+                const statusLabel = document.createElement("strong");
+                statusLabel.textContent = "Status: ";
+
+                const statusText = document.createElement("span");
+                const statuses = {
+                    aberta: "Aberta",
+                    em_analise: "Em análise",
+                    resolvida: "Resolvida"
+                };
+
+                statusText.textContent =
+                    statuses[complaint.status] || complaint.status;
+                statusText.className = "status";
+
+                status.append(statusLabel, statusText);
+
+                panel.append(title, descriptionLabel, description, status);
+
+            } catch (error) {
+                panel.textContent =
+                    "Não foi possível carregar os detalhes. Tente novamente.";
+
+                console.error(error);
+            }
+        }
+
+        loadDetails();
+    </script>
 </body>
 </html>

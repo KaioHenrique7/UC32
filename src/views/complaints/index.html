@@ -1,32 +1,57 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
-
-    <title>Minhas reclamações</title>
-
-    <link
-        rel="stylesheet"
-        href="/css/style.css"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reclamações | UC32</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
-
 <body>
+    <div class="layout">
+        <aside class="sidebar">
+            <h2>UC32</h2>
+            <nav>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/complaints">Reclamações</a>
+                <a href="/complaints/create">Nova reclamação</a>
+                <a href="/logout">Sair</a>
+            </nav>
+        </aside>
 
-<main class="dashboard">
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <h1>Reclamações</h1>
+                    <p class="muted">Consulte suas solicitações.</p>
+                </div>
+                <a class="btn" href="/complaints/create">+ Nova</a>
+            </header>
 
-    <h1>Minhas reclamações</h1>
-
-    <a href="/complaints/create">
-        Nova reclamação
-    </a>
-
-    <div id="complaints-list"></div>
-
-</main>
-
-<script src="/js/app.js"></script>
-
+            <section class="panel">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Status</th>
+                                <th>Detalhes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="3">
+                                    As reclamações cadastradas aparecerão aqui.
+                                    <p class="muted">
+                                        Esta tabela precisa ser ligada ao back-end.
+                                    </p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
 </body>
 </html>
+
