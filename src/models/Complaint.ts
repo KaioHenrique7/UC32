@@ -53,8 +53,9 @@ function toComplaintShape(
             ? "Anônimo"
             : complaint.user.name,
         is_owner: complaint.userId === viewerId,
-        photo_path: complaint.photoPath,
-        votes_count: complaint._count.votes,
+        photo_path: complaint.photoPath
+        ? `/api/complaints/${complaint.id}/photo`
+        : null,        votes_count: complaint._count.votes,
         created_at: complaint.createdAt
     };
 }
