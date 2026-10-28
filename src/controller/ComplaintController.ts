@@ -7,22 +7,24 @@ export class ComplaintController {
         req: Request,
         res: Response
     ) {
-<<<<<<< HEAD
+        const userId = req.session.userId;
+
+        if (!userId) {
+            if (req.path.startsWith("/api/")) {
+                return res.status(401).json({
+                    message: "Usuário não autenticado."
+                });
+            }
+
+            return res.redirect("/login");
+        }
+
         const {
             title,
             description,
             isAnonymous
         } = req.body ?? {};
-=======
-        try {
-            const userId = req.session.userId;
 
-            if (!userId) {
-                return res.redirect("/login");
-            }
->>>>>>> f6109fc ( adicionando a lista de relamações.)
-
-        // Formulários enviam texto; JSON pode enviar booleanos.
         const validAnonymousValues = [
             undefined,
             true,
@@ -32,27 +34,10 @@ export class ComplaintController {
             "on"
         ];
 
-<<<<<<< HEAD
         if (!validAnonymousValues.includes(isAnonymous)) {
             return res.status(400).json({
                 message: "Opção de anonimato inválida."
             });
-=======
-            await ComplaintService.create(
-                Number(userId),
-                title,
-                description
-            );
-
-            return res.redirect("/complaints");
-        } catch (error: unknown) {
-            const message =
-                error instanceof Error
-                    ? error.message
-                    : "Erro ao cadastrar reclamação.";
-
-            return res.status(400).send(message);
->>>>>>> f6109fc ( adicionando a lista de relamações.)
         }
 
         const anonymous =
@@ -60,16 +45,23 @@ export class ComplaintController {
             isAnonymous === "true" ||
             isAnonymous === "on";
 
-        let complaintId: number;
-
         try {
-            complaintId = await ComplaintService.create(
-                req.session.userId!,
+            const complaintId = await ComplaintService.create(
+                Number(userId),
                 title,
                 description,
                 anonymous
             );
-        } catch (error) {
+
+            if (req.path.startsWith("/api/")) {
+                return res.status(201).json({
+                    message: "Reclamação criada com sucesso.",
+                    id: complaintId
+                });
+            }
+
+            return res.redirect(303, "/complaints");
+        } catch (error: unknown) {
             const message = error instanceof Error
                 ? error.message
                 : "";
@@ -90,42 +82,27 @@ export class ComplaintController {
                 message: "Erro ao criar reclamação."
             });
         }
-
-        if (req.path.startsWith("/api/")) {
-            return res.status(201).json({
-                message: "Reclamação criada com sucesso.",
-                id: complaintId
-            });
-        }
-
-        return res.redirect(303, "/complaints");
     }
 
     static async list(
         req: Request,
         res: Response
     ) {
+        const userId = req.session.userId;
+
+        if (!userId) {
+            return res.status(401).json({
+                message: "Usuário não autenticado."
+            });
+        }
+
         try {
-<<<<<<< HEAD
-            const complaints =
-                await ComplaintService.list(
-                    req.session.userId!
-                );
-=======
-            const userId = req.session.userId;
-
-            if (!userId) {
-                return res.status(401).json({
-                    message: "Usuário não autenticado."
-                });
-            }
-
-            const complaints =
-                await ComplaintService.list(Number(userId));
->>>>>>> f6109fc ( adicionando a lista de relamações.)
+            const complaints = await ComplaintService.list(
+                Number(userId)
+            );
 
             return res.json(complaints);
-        } catch (error) {
+        } catch (error: unknown) {
             console.error(error);
 
             return res.status(500).json({
@@ -138,7 +115,14 @@ export class ComplaintController {
         req: Request,
         res: Response
     ) {
-<<<<<<< HEAD
+        const userId = req.session.userId;
+
+        if (!userId) {
+            return res.status(401).json({
+                message: "Usuário não autenticado."
+            });
+        }
+
         const id = Number(req.params.id);
 
         if (!Number.isSafeInteger(id) || id <= 0) {
@@ -149,34 +133,10 @@ export class ComplaintController {
         }
 
         try {
-            const complaint =
-                await ComplaintService.details(
-                    id,
-                    req.session.userId!
-=======
-        try {
-            const userId = req.session.userId;
-
-            if (!userId) {
-                return res.status(401).json({
-                    message: "Usuário não autenticado."
-                });
-            }
-
-            const id = Number(req.params.id);
-
-            if (!Number.isInteger(id) || id <= 0) {
-                return res.status(400).json({
-                    message: "ID da reclamação inválido."
-                });
-            }
-
-            const complaint =
-                await ComplaintService.details(
-                    id,
-                    Number(userId)
->>>>>>> f6109fc ( adicionando a lista de relamações.)
-                );
+            const complaint = await ComplaintService.details(
+                id,
+                Number(userId)
+            );
 
             if (!complaint) {
                 return res.status(404).json({
@@ -185,7 +145,7 @@ export class ComplaintController {
             }
 
             return res.json(complaint);
-        } catch (error) {
+        } catch (error: unknown) {
             console.error(error);
 
             return res.status(500).json({
@@ -193,12 +153,19 @@ export class ComplaintController {
             });
         }
     }
-<<<<<<< HEAD
 
     static async update(
         req: Request,
         res: Response
     ) {
+        const userId = req.session.userId;
+
+        if (!userId) {
+            return res.status(401).json({
+                message: "Usuário não autenticado."
+            });
+        }
+
         const id = Number(req.params.id);
 
         const validationMessages = [
@@ -217,7 +184,7 @@ export class ComplaintController {
 
             const updated = await ComplaintService.update(
                 id,
-                req.session.userId!,
+                Number(userId),
                 title,
                 description,
                 isAnonymous
@@ -233,7 +200,7 @@ export class ComplaintController {
             return res.json({
                 message: "Reclamação atualizada com sucesso."
             });
-        } catch (error) {
+        } catch (error: unknown) {
             const message = error instanceof Error
                 ? error.message
                 : "";
@@ -254,6 +221,14 @@ export class ComplaintController {
         req: Request,
         res: Response
     ) {
+        const userId = req.session.userId;
+
+        if (!userId) {
+            return res.status(401).json({
+                message: "Usuário não autenticado."
+            });
+        }
+
         const id = Number(req.params.id);
 
         if (!Number.isSafeInteger(id) || id <= 0) {
@@ -266,7 +241,7 @@ export class ComplaintController {
         try {
             const removed = await ComplaintService.remove(
                 id,
-                req.session.userId!
+                Number(userId)
             );
 
             if (!removed) {
@@ -279,7 +254,7 @@ export class ComplaintController {
             return res.json({
                 message: "Reclamação excluída com sucesso."
             });
-        } catch (error) {
+        } catch (error: unknown) {
             console.error(error);
 
             return res.status(500).json({
@@ -288,6 +263,3 @@ export class ComplaintController {
         }
     }
 }
-=======
-}
->>>>>>> f6109fc ( adicionando a lista de relamações.)
