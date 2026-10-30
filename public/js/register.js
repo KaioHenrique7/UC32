@@ -13,10 +13,16 @@ form?.addEventListener("submit", async (event) => {
     const message =
         document.getElementById("register-message");
 
-    message.textContent = "Cadastrando...";
+    // .message fica oculta no CSS sem a classe error/success
+    function showMessage(text, type) {
+        message.textContent = text;
+        message.className = `message ${type}`;
+    }
+
+    showMessage("Cadastrando...", "success");
 
     if (password !== confirmPassword) {
-        message.textContent = "As senhas não são iguais.";
+        showMessage("As senhas não são iguais.", "error");
         return;
     }
 
@@ -46,8 +52,7 @@ form?.addEventListener("submit", async (event) => {
             );
         }
 
-        message.textContent =
-            "Cadastro realizado com sucesso!";
+        showMessage("Cadastro realizado com sucesso!", "success");
 
         setTimeout(() => {
             window.location.href = "/login";
@@ -55,8 +60,10 @@ form?.addEventListener("submit", async (event) => {
 
     } catch (error) {
 
-        message.textContent =
-            error.message || "Erro ao realizar cadastro.";
+        showMessage(
+            error.message || "Erro ao realizar cadastro.",
+            "error"
+        );
 
     }
 

@@ -21,6 +21,12 @@ router.post(
     AuthController.logout
 );
 
+// Link "Sair" do menu faz GET
+router.get(
+    "/logout",
+    AuthController.logoutRedirect
+);
+
 router.get(
     "/me",
     AuthController.me

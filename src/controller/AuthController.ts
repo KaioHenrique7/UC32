@@ -122,4 +122,15 @@ export class AuthController {
             });
         });
     }
+
+    static async logoutRedirect(
+        req: Request,
+        res: Response
+    ) {
+        req.session.destroy(() => {
+            res.clearCookie("connect.sid");
+
+            return res.redirect("/login");
+        });
+    }
 }

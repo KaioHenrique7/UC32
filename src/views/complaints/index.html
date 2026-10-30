@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reclamações | UC32</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <div class="layout">
@@ -37,7 +37,7 @@
                                 <th>Detalhes</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="complaints-list">
                             <tr>
                                 <td colspan="3">
                                     As reclamações cadastradas aparecerão aqui.
@@ -52,6 +52,90 @@
             </section>
         </main>
     </div>
+
+    <script>
+        async function loadComplaints() {
+            const tbody = document.getElementById("complaints-list");
+
+            try {
+                const response = await fetch("/api/complaints");
+
+                if (response.status === 401) {
+                    window.location.href = "/login";
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error("Não foi possível buscar as reclamações.");
+                }
+
+                const complaints = await response.json();
+
+                tbody.replaceChildren();
+
+                if (complaints.length === 0) {
+                    const row = document.createElement("tr");
+                    const cell = document.createElement("td");
+
+                    cell.colSpan = 3;
+                    cell.textContent = "Nenhuma reclamação cadastrada.";
+
+                    row.appendChild(cell);
+                    tbody.appendChild(row);
+                    return;
+                }
+
+                complaints.forEach((complaint) => {
+                    const row = document.createElement("tr");
+
+                    const titleCell = document.createElement("td");
+                    titleCell.textContent = complaint.title;
+
+                    const statusCell = document.createElement("td");
+
+                    const statuses = {
+                        aberta: "Aberta",
+                        em_analise: "Em análise",
+                        resolvida: "Resolvida"
+                    };
+
+                    statusCell.textContent =
+                        statuses[complaint.status] || complaint.status;
+
+                    const detailsCell = document.createElement("td");
+                    const link = document.createElement("a");
+
+                    link.href = `/complaints/details?id=${complaint.id}`;
+                    link.textContent = "Ver detalhes";
+
+                    detailsCell.appendChild(link);
+
+                    row.appendChild(titleCell);
+                    row.appendChild(statusCell);
+                    row.appendChild(detailsCell);
+
+                    tbody.appendChild(row);
+                });
+
+            } catch (error) {
+                tbody.replaceChildren();
+
+                const row = document.createElement("tr");
+                const cell = document.createElement("td");
+
+                cell.colSpan = 3;
+                cell.textContent =
+                    "Erro ao carregar reclamações. Tente novamente.";
+
+                row.appendChild(cell);
+                tbody.appendChild(row);
+
+                console.error(error);
+            }
+        }
+
+        loadComplaints();
+    </script>
 </body>
 </html>
 
