@@ -1,38 +1,40 @@
-
-import {
-    Request,
-    Response
-} from "express";
-
-import {
-    UserModel
-} from "../models/User";
+import { Request, Response } from "express";
+import { UserModel } from "../models/User";
 
 export class UserController {
-
-    static async me(
+    static async profile(
         req: Request,
         res: Response
     ) {
-        if (!req.session.userId) {
-            return res.status(401).json({
-                message:
-                    "Usuário não autenticado."
-            });
-        }
+        try {
+            const userId = req.session.userId;
 
-        const user =
-            await UserModel.findById(
-                req.session.userId
+            if (!userId) {
+                return res.status(401).json({
+                    error: "Usuário não autenticado."
+                });
+            }
+
+            const user = await UserModel.findById(userId);
+
+            if (!user) {
+                return res.status(404).json({
+                    error: "Usuário não encontrado."
+                });
+            }
+
+            return res.json({
+                user
+            });
+        } catch (error) {
+            console.error(
+                "Erro ao buscar perfil:",
+                error
             );
 
-        if (!user) {
-            return res.status(404).json({
-                message:
-                    "Usuário não encontrado."
+            return res.status(500).json({
+                error: "Erro ao buscar perfil do usuário."
             });
         }
-
-        return res.json(user);
     }
 }
