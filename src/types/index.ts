@@ -1,11 +1,14 @@
+export type ComplaintStatus =
+    | "aberta"
+    | "em_analise"
+    | "resolvida";
+
 export interface User {
     id?: number;
     name: string;
     email: string;
     password: string;
 }
-
-export type ComplaintStatus = "aberta" | "em_analise" | "resolvida";
 
 export interface Complaint {
     id?: number;
