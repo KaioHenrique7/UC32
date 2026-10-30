@@ -1,190 +1,131 @@
 import connection from "../database/connection";
-import { Complaint } from "../types";
+import {
+    Complaint,
+    ComplaintStatus
+} from "../types";
 
-type ComplaintInput = Complaint & {
-    cycleId?: number;
-    isAnonymous?: boolean;
-    photoPath?: string | null;
-};
-
-const publicInclude = {
-    user: {
-        select: {
-            name: true
-        }
-    },
-    _count: {
-        select: {
-            votes: true
-        }
-    }
-} as const;
-
-type ComplaintRecord = {
+type ComplaintDatabase = {
     id: number;
     userId: number;
-    cycleId: number | null;
     title: string;
     description: string;
-    status: "aberta" | "em_analise" | "resolvida";
-    isAnonymous: boolean;
-    photoPath: string | null;
+    status:
+        | "aberta"
+        | "em_analise"
+        | "resolvida";
     createdAt: Date;
-    user: {
-        name: string;
-    };
-    _count: {
-        votes: number;
-    };
 };
 
 function toComplaintShape(
-    complaint: ComplaintRecord,
-    viewerId: number
+    complaint: ComplaintDatabase
 ) {
     return {
         id: complaint.id,
-        cycle_id: complaint.cycleId,
+        user_id: complaint.userId,
         title: complaint.title,
         description: complaint.description,
         status: complaint.status,
-        is_anonymous: complaint.isAnonymous,
-        author_name: complaint.isAnonymous
-            ? "Anônimo"
-            : complaint.user.name,
-        is_owner: complaint.userId === viewerId,
-        photo_path: complaint.photoPath
-        ? `/api/complaints/${complaint.id}/photo`
-        : null,        votes_count: complaint._count.votes,
         created_at: complaint.createdAt
     };
 }
 
 export class ComplaintModel {
     static async create(
-        complaint: ComplaintInput
+        complaint: Complaint
     ): Promise<number> {
-        const created = await connection.complaint.create({
-            data: {
-                userId: complaint.user_id,
-                title: complaint.title,
-                description: complaint.description,
-                cycleId: complaint.cycleId,
-                isAnonymous: complaint.isAnonymous ?? false,
-                photoPath: complaint.photoPath ?? null
-            },
-            select: {
-                id: true
-            }
-        });
-
-        return created.id;
-    }
-
-    static async findAllByUser(userId: number) {
-        const complaints = await connection.complaint.findMany({
-            where: {
-                userId,
-                deletedAt: null
-            },
-            include: publicInclude,
-            orderBy: {
-                createdAt: "desc"
-            }
-        });
-
-        return complaints.map((complaint) =>
-            toComplaintShape(complaint, userId)
-        );
-    }
-
-    static async findAllByCycle(
-        cycleId: number,
-        viewerId: number
-    ) {
-        const complaints = await connection.complaint.findMany({
-            where: {
-                cycleId,
-                deletedAt: null
-            },
-            include: publicInclude,
-            orderBy: [
-                {
-                    votes: {
-                        _count: "desc"
-                    }
+        const createdComplaint =
+            await connection.complaint.create({
+                data: {
+                    userId: complaint.user_id,
+                    title: complaint.title,
+                    description: complaint.description
                 },
-                {
-                    createdAt: "desc"
-                },
-                {
-                    id: "desc"
+                select: {
+                    id: true
                 }
-            ]
-        });
+            });
 
-        return complaints.map((complaint) =>
-            toComplaintShape(complaint, viewerId)
+        return createdComplaint.id;
+    }
+
+    static async findAllByUser(
+        userId: number
+    ) {
+        const complaints =
+            await connection.complaint.findMany({
+                where: {
+                    userId
+                },
+                orderBy: {
+                    createdAt: "desc"
+                }
+            });
+
+        return complaints.map(
+            toComplaintShape
         );
     }
 
     static async findById(
         id: number,
-        viewerId: number
+        userId: number
     ) {
-        const complaint = await connection.complaint.findFirst({
-            where: {
-                id,
-                deletedAt: null
-            },
-            include: publicInclude
-        });
+        const complaint =
+            await connection.complaint.findFirst({
+                where: {
+                    id,
+                    userId
+                }
+            });
 
-        return complaint
-            ? toComplaintShape(complaint, viewerId)
-            : null;
+        if (!complaint) {
+            return null;
+        }
+
+        return toComplaintShape(complaint);
     }
 
-    static async updateByAuthor(
+    static async updateStatus(
         id: number,
         userId: number,
-        data: {
-            title: string;
-            description: string;
-            isAnonymous: boolean;
-        }
+        status: ComplaintStatus
     ) {
-        const result = await connection.complaint.updateMany({
+        await connection.complaint.updateMany({
             where: {
                 id,
-                userId,
-                deletedAt: null
+                userId
             },
             data: {
-                title: data.title,
-                description: data.description,
-                isAnonymous: data.isAnonymous
+                status
             }
         });
 
-        return result.count > 0;
+        const updatedComplaint =
+            await connection.complaint.findFirst({
+                where: {
+                    id,
+                    userId
+                }
+            });
+
+        if (!updatedComplaint) {
+            return null;
+        }
+
+        return toComplaintShape(
+            updatedComplaint
+        );
     }
 
-    static async deleteByAuthor(
+    static async delete(
         id: number,
         userId: number
     ) {
-        const result = await connection.complaint.updateMany({
+        await connection.complaint.deleteMany({
             where: {
                 id,
-                userId,
-                deletedAt: null
-            },
-            data: {
-                deletedAt: new Date()
+                userId
             }
         });
-
-        return result.count > 0;
     }
 }
