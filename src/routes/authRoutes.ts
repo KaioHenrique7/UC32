@@ -1,8 +1,5 @@
 import { Router } from "express";
-
-import {
-    AuthController
-} from "../controller/AuthController";
+import { AuthController } from "../controller/AuthController";
 
 const router = Router();
 
@@ -19,12 +16,6 @@ router.post(
 router.post(
     "/logout",
     AuthController.logout
-);
-
-// Link "Sair" do menu faz GET
-router.get(
-    "/logout",
-    AuthController.logoutRedirect
 );
 
 router.get(
